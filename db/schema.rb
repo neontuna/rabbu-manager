@@ -18,8 +18,10 @@ ActiveRecord::Schema.define(version: 2019_01_24_201857) do
   create_table "devices", force: :cascade do |t|
     t.bigint "listing_id"
     t.integer "status", default: 0, null: false
-    t.integer "type", default: 0, null: false
+    t.integer "hardware_type", default: 0, null: false
     t.jsonb "meta"
+    t.string "display_name"
+    t.string "smartthings_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["listing_id"], name: "index_devices_on_listing_id"

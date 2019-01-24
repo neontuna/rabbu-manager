@@ -8,8 +8,6 @@ require "uri"
 # Our client ID and secret, used to get the access token
 CLIENT_ID = ENV['ST_CLIENT_ID']
 CLIENT_SECRET = ENV['ST_CLIENT_SECRET']
-puts CLIENT_ID
-puts CLIENT_SECRET
 
 # We'll store the access token in the session
 use Rack::Session::Pool, :cookie_only => false
@@ -46,7 +44,6 @@ get '/authorize' do
   # After we authenticate with SmartThings, we will be redirected to the
   # redirect_uri, including our access code used to get the token
   url = client.auth_code.authorize_url(redirect_uri: redirect_uri, scope: 'app')
-  puts url
   redirect url
 end
 
@@ -75,5 +72,49 @@ end
 # we will make requests to get information about the configured
 # switch.
 get '/getswitch' do
-    'Not Implemented!'
+  # If we get to this URL without having gotten the access token
+  # redirect back to root to go through authorization
+  if !authenticated?
+    redirect '/'
+  end
+
+  token = session[:access_token]
+
+  # make a request to the SmartThings endpoint URI, using the token,
+  # to get our endpoints
+  url = URI.parse(endpoints_uri)
+  req = Net::HTTP::Get.new(url.request_uri)
+
+  # we set a HTTP header of "Authorization: Bearer <API Token>"
+  req['Authorization'] = 'Bearer ' + token
+
+  http = Net::HTTP.new(url.host, url.port)
+  http.use_ssl = (url.scheme == "https")
+
+  response = http.request(req)
+  json = JSON.parse(response.body)
+
+  # debug statement
+  puts json
+
+  # get the endpoint from the JSON:
+  uri = json[0]['uri']
+
+  # now we can build a URL to our WebServices SmartApp
+  # we will make a GET request to get information about the switch
+  switchUrl = uri + '/switches'
+
+  # debug
+  puts "SWITCH ENDPOINT: " + switchUrl
+
+  getSwitchURL = URI.parse(switchUrl)
+  getSwitchReq = Net::HTTP::Get.new(getSwitchURL.request_uri)
+  getSwitchReq['Authorization'] = 'Bearer ' + token
+
+  getSwitchHttp = Net::HTTP.new(getSwitchURL.host, getSwitchURL.port)
+  getSwitchHttp.use_ssl = true
+
+  switchStatus = getSwitchHttp.request(getSwitchReq)
+
+  '<h3>Response Code</h3>' + switchStatus.code + '<br/><h3>Response Headers</h3>' + switchStatus.to_hash.inspect + '<br/><h3>Response Body</h3>' + switchStatus.body
 end

@@ -1,4 +1,15 @@
+require 'oauth2'
+
 class ListingsController < ApplicationController
+  OPTIONS = {
+    site: 'https://graph.api.smartthings.com',
+    authorize_url: '/oauth/authorize',
+    token_url: '/oauth/token'
+  }
+  REDIRECT_URI = 'http://localhost:3000/smartthings_oauth/callback'
+  CLIENT_ID = Rails.application.credentials[Rails.env.to_sym][:st_client_id]
+  CLIENT_SECRET = Rails.application.credentials[Rails.env.to_sym][:st_client_secret]
+
   before_action :set_listing, only: [:show, :edit, :update, :destroy]
 
   # GET /listings
@@ -10,6 +21,9 @@ class ListingsController < ApplicationController
   # GET /listings/1
   # GET /listings/1.json
   def show
+    client = OAuth2::Client.new(CLIENT_ID, CLIENT_SECRET, OPTIONS)
+    @smartthings_authorize_url = client.auth_code.authorize_url(
+      redirect_uri: REDIRECT_URI, scope: 'app', state: @listing.id)
   end
 
   # GET /listings/new

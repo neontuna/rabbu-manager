@@ -17,3 +17,9 @@
   <dt>Address:</dt>
   <dd><%= @listing.address %></dd>
 </dl>
+
+<% if @listing.devices.any? %>
+  
+<% else %>
+  <%= link_to "Connect with SmartThings to add devices", @smartthings_authorize_url  %>  
+<% end %>

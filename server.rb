@@ -8,6 +8,8 @@ require "uri"
 # Our client ID and secret, used to get the access token
 CLIENT_ID = ENV['ST_CLIENT_ID']
 CLIENT_SECRET = ENV['ST_CLIENT_SECRET']
+puts CLIENT_ID
+puts CLIENT_SECRET
 
 # We'll store the access token in the session
 use Rack::Session::Pool, :cookie_only => false
@@ -48,11 +50,25 @@ get '/authorize' do
   redirect url
 end
 
-# hanlde requests to /oauth/callback URL. We
+# handle requests to /oauth/callback URL. We
 # will tell SmartThings to call this URL with our
 # authorization code once we've authenticated.
 get '/oauth/callback' do
-    'Not Implemented!'
+  # The callback is called with a "code" URL parameter
+  # This is the code we can use to get our access token
+  code = params[:code]
+
+  # Use the code to get the token.
+  response = client.auth_code.get_token(code, redirect_uri: redirect_uri, scope: 'app')
+
+  # now that we have the access token, we will store it in the session
+  session[:access_token] = response.token
+
+  # debug - inspect the running console for the
+  # expires in (seconds from now), and the expires at (in epoch time)
+  puts 'TOKEN EXPIRES IN ' + response.expires_in.to_s
+  puts 'TOKEN EXPIRES AT ' + response.expires_at.to_s
+  redirect '/getswitch'
 end
 
 # handle requests to the /getSwitch URL. This is where

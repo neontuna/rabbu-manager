@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :listings
   get '/privacy', to: 'home#privacy'
   get '/terms', to: 'home#terms'
   devise_for :users

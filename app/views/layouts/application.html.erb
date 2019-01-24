@@ -8,6 +8,11 @@
     <%= render 'shared/navbar' %>
 
     <div class="container">
+      <% flash.each do |key, value| %>
+        <div class="alert <%= bootstrap_class_for(key) %>">
+          <%= value %>
+        </div>
+      <% end %>
       <%= yield %>
     </div>
 

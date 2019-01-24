@@ -68,6 +68,9 @@ GEM
       momentjs-rails (~> 2.8)
       sass-rails (~> 5.0)
       selectize-rails (~> 0.6)
+    annotate (2.7.4)
+      activerecord (>= 3.2, < 6.0)
+      rake (>= 10.4, < 13.0)
     archive-zip (0.11.0)
       io-like (~> 0.3.0)
     arel (9.0.0)
@@ -341,6 +344,7 @@ PLATFORMS
 
 DEPENDENCIES
   administrate (~> 0.10.0)
+  annotate
   bootsnap (>= 1.1.0)
   bootstrap (~> 4.1, >= 4.1.1)
   byebug

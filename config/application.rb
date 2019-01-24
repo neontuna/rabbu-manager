@@ -8,6 +8,7 @@ Bundler.require(*Rails.groups)
 
 module RabbuManager
   class Application < Rails::Application
+    config.application_name = Rails.application.class.parent_name
     config.active_job.queue_adapter = :sidekiq
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.2

@@ -64,6 +64,23 @@ module Services
       end
     end
 
+    def update_devices_for_listing
+      return if failure?
+
+      devices.each do |remote_device|
+        @listing.devices.where(smartthings_id: remote_device['id']).first_or_create do |local_device|
+          local_device.update(
+            display_name: remote_device['name'],
+            hardware_type: remote_device['type'],
+            status: remote_device['value'],
+            meta: remote_device['meta']
+          )
+        end
+      end
+    end
+
+    private
+
     def devices
       handle_http_exception do
         response = HTTParty.get(
@@ -80,21 +97,6 @@ module Services
         end
       end    
     end
-
-    def update_devices_for_listing
-      devices.each do |remote_device|
-        @listing.devices.where(smartthings_id: remote_device['id']).first_or_create do |local_device|
-          local_device.update(
-            display_name: remote_device['name'],
-            hardware_type: remote_device['type'],
-            status: remote_device['value'],
-            meta: remote_device['meta']
-          )
-        end
-      end
-    end
-
-    private
 
     def handle_http_exception
       yield

@@ -19,7 +19,45 @@
 </dl>
 
 <% if @listing.devices.any? %>
-  <%= link_to "Connect with SmartThings to add devices", @smartthings_authorize_url  %> 
+
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Device Name</th>
+          <th>Type</th> 
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @listing.devices.each do |device| %>
+          <%= content_tag :tr, id: dom_id(device), class: dom_class(device) do %>
+            <td>
+              <% case device.hardware_type %>
+              <% when "st_switch" %>
+                <%= icon('fas', 'lightbulb') %>
+              <% when "st_lock" %>
+                <%= icon('fas', 'lock') %>
+              <% when "st_thermostat" %>
+                <%= icon('fas', 'temperature-high') %>
+              <% end %>
+            </td>
+            <td><%= device.display_name %></td>
+            <td><%= device.hardware_type %></td>
+            <td><%= device.status %></td>
+            <td>
+              <%= device.meta %>
+            </td>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%= link_to "Reconnect with SmartThings to add more devices", @smartthings_authorize_url  %> 
 <% else %>
   <%= link_to "Connect with SmartThings to add devices", @smartthings_authorize_url  %>  
 <% end %>

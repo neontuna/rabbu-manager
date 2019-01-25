@@ -1,4 +1,5 @@
 require 'oauth2'
+require 'httparty'
 
 class SmartthingsOauthController < ApplicationController
   OPTIONS = {
@@ -9,26 +10,47 @@ class SmartthingsOauthController < ApplicationController
   REDIRECT_URI = 'http://localhost:3000/smartthings_oauth/callback'
   CLIENT_ID = Rails.application.credentials[Rails.env.to_sym][:st_client_id]
   CLIENT_SECRET = Rails.application.credentials[Rails.env.to_sym][:st_client_secret]
+  ENDPOINTS_URI = 'https://graph.api.smartthings.com/api/smartapps/endpoints'
 
   def create
-    client = OAuth2::Client.new(CLIENT_ID, CLIENT_SECRET, OPTIONS)
-    code = params[:code]
-
-    # Use the code to get the token.
-    response = client.auth_code.get_token(code, redirect_uri: REDIRECT_URI, scope: 'app')
-
-    # now that we have the access token, we will store it in the session
-    puts "TOKEN #{response.token}"
-
-    # debug - inspect the running console for the
-    # expires in (seconds from now), and the expires at (in epoch time)
-    puts 'TOKEN EXPIRES IN ' + response.expires_in.to_s
-    puts 'TOKEN EXPIRES AT ' + response.expires_at.to_s
-
+    token = get_smartthings_token(params[:code])
+    endpoint = get_smartthings_endpoints(token)
     @listing = Listing.find(params[:state])
-    if @listing.update(smartthings_token: response.token)
+
+    if @listing.update(smartthings_token: token, smartthings_endpoint: endpoint)
       flash[:success] = "Successfully connected to Smartthings, syncing devices now..."
       redirect_to @listing
     end
+  end
+
+  def get_smartthings_token(callback_code)
+    client = OAuth2::Client.new(CLIENT_ID, CLIENT_SECRET, OPTIONS)
+    handle_http_exception do
+      response = client.auth_code.get_token(callback_code, redirect_uri: REDIRECT_URI, scope: 'app')
+      response.token
+    end
+  end
+
+  def get_smartthings_endpoints(auth_token)
+    handle_http_exception do
+      response = HTTParty.get(
+        ENDPOINTS_URI,
+        headers: {
+          Authorization: "Bearer #{auth_token}"
+        }
+      )
+
+      if response.code == 200
+        response.parsed_response[0]['uri']
+      else
+        puts "error #{response.parsed_response}"
+      end
+    end
+  end
+
+  def handle_http_exception
+    yield
+  rescue HTTParty::Error, SocketError, Net::OpenTimeout, OAuth2::Error => error
+    puts error
   end
 end

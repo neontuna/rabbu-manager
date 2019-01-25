@@ -16,6 +16,5 @@
 class Device < ApplicationRecord
   belongs_to :listing
 
-  enum status: { status_unknown: 0, on: 1, off: 2 }
-  enum hardware_type: { hardware_unknown: 0, light: 1, smart_lock: 2, thermostat: 3 }
+  enum hardware_type: { hardware_unknown: 0, st_switch: 1, st_lock: 2, st_thermostat: 3 }
 end

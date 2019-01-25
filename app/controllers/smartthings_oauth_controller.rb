@@ -48,6 +48,41 @@ class SmartthingsOauthController < ApplicationController
     end
   end
 
+  def get_devices_for(listing_id)
+    listing = Listing.find(listing_id)
+
+    handle_http_exception do
+      response = HTTParty.get(
+        "#{listing.smartthings_endpoint}/devices",
+        headers: {
+          Authorization: "Bearer #{listing.smartthings_token}"
+        }
+      )
+
+      if response.code == 200
+        response.parsed_response
+      else
+        puts "error #{response.parsed_response}"
+      end
+    end    
+  end
+
+  def update_devices_for(listing_id)
+    devices = get_devices_for(listing_id)
+    listing = Listing.find(listing_id)
+
+    devices.each do |remote_device|
+      listing.devices.where(smartthings_id: remote_device['id']).first_or_create do |local_device|
+        local_device.update(
+          display_name: remote_device['name'],
+          hardware_type: remote_device['type'],
+          status: remote_device['value'],
+          meta: remote_device['meta']
+        )
+      end
+    end
+  end
+
   def handle_http_exception
     yield
   rescue HTTParty::Error, SocketError, Net::OpenTimeout, OAuth2::Error => error

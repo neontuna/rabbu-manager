@@ -19,7 +19,7 @@
 </dl>
 
 <% if @listing.devices.any? %>
-  
+  <%= link_to "Connect with SmartThings to add devices", @smartthings_authorize_url  %> 
 <% else %>
   <%= link_to "Connect with SmartThings to add devices", @smartthings_authorize_url  %>  
 <% end %>

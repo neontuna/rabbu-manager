@@ -4,7 +4,7 @@
 #
 #  id             :bigint(8)        not null, primary key
 #  listing_id     :bigint(8)
-#  status         :integer          default("status_unknown"), not null
+#  status         :string           default("0"), not null
 #  hardware_type  :integer          default("hardware_unknown"), not null
 #  meta           :jsonb
 #  display_name   :string

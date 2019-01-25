@@ -8,6 +8,9 @@ Bundler.require(*Rails.groups)
 
 module RabbuManager
   class Application < Rails::Application
+    # Allows for using module namespacing, see app/services for example
+    config.autoload_paths += %W(#{config.root}/app)
+    
     config.application_name = Rails.application.class.parent_name
     config.active_job.queue_adapter = :sidekiq
     # Initialize configuration defaults for originally generated Rails version.

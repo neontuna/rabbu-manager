@@ -2,15 +2,27 @@
 #
 # Table name: listings
 #
-#  id         :bigint(8)        not null, primary key
-#  title      :string
-#  address    :string
-#  user_id    :bigint(8)
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                   :bigint(8)        not null, primary key
+#  title                :string
+#  address              :string
+#  user_id              :bigint(8)
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  smartthings_token    :string
+#  smartthings_endpoint :string
 #
 
 class Listing < ApplicationRecord
   belongs_to :user
-  has_many :devices
+  has_many :devices, dependent: :destroy
+
+  def save_smartthings_connection(callback_code)
+    smartthings = Services::Smartthings.new(self.id)
+    token = smartthings.auth_token(callback_code)
+
+    update!(
+      smartthings_token: token,
+      smartthings_endpoint: smartthings.endpoint(token)
+    )
+  end
 end

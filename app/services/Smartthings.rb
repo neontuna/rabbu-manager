@@ -81,12 +81,9 @@ module Services
       end    
     end
 
-    def update_devices_for(listing_id)
-      devices = get_devices_for(listing_id)
-      listing = Listing.find(listing_id)
-
+    def update_devices_for_listing
       devices.each do |remote_device|
-        listing.devices.where(smartthings_id: remote_device['id']).first_or_create do |local_device|
+        @listing.devices.where(smartthings_id: remote_device['id']).first_or_create do |local_device|
           local_device.update(
             display_name: remote_device['name'],
             hardware_type: remote_device['type'],

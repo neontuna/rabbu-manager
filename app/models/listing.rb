@@ -25,4 +25,8 @@ class Listing < ApplicationRecord
       smartthings_endpoint: smartthings.endpoint(token)
     )
   end
+
+  def update_devices
+    Services::Smartthings.new(self.id).update_devices_for_listing
+  end
 end

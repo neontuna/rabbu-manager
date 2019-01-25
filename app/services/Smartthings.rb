@@ -68,7 +68,7 @@ module Services
       return if failure?
 
       devices.each do |remote_device|
-        @listing.devices.where(smartthings_id: remote_device['id']).first_or_create do |local_device|
+        @listing.devices.where(smartthings_id: remote_device['id']).first_or_create.tap do |local_device|
           local_device.update(
             display_name: remote_device['name'],
             hardware_type: remote_device['type'],
@@ -77,12 +77,24 @@ module Services
           )
         end
       end
+
+      remove_unselected_devices
     end
 
     private
 
+    # check results from Smartthings endpoint, removing any devices that didn't come back
+    # we assume the user has unchecked these from the Smartapp install screen
+    def remove_unselected_devices
+      local_devices = @listing.devices.pluck(:smartthings_id)
+      remote_devices = devices.collect{ |u| u['id'] }
+
+      deleted_ids = local_devices - remote_devices
+      @listing.devices.where(smartthings_id: deleted_ids).destroy_all
+    end
+
     def devices
-      handle_http_exception do
+      @devices ||= handle_http_exception do
         response = HTTParty.get(
           "#{@listing.smartthings_endpoint}/devices",
           headers: {
@@ -94,6 +106,7 @@ module Services
           response.parsed_response
         else
           errors << response.parsed_response
+          nil
         end
       end    
     end

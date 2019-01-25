@@ -26,7 +26,6 @@
         <tr>
           <th></th>
           <th>Device Name</th>
-          <th>Type</th> 
           <th>Status</th>
           <th></th>
         </tr>
@@ -36,20 +35,37 @@
         <% @listing.devices.each do |device| %>
           <%= content_tag :tr, id: dom_id(device), class: dom_class(device) do %>
             <td>
+              <!-- Being lazy and using bootstrap classes here for color -->
               <% case device.hardware_type %>
               <% when "st_switch" %>
-                <%= icon('fas', 'lightbulb') %>
+                <% if device.status == 'on' %>
+                  <%= icon('fas', 'lightbulb', class: 'text-warning') %>
+                <% else %>
+                  <%= icon('fas', 'lightbulb', class: 'text-muted') %>
+                <% end %>
               <% when "st_lock" %>
-                <%= icon('fas', 'lock') %>
+                <% if device.status == 'locked' %>
+                  <%= icon('fas', 'lock', class: 'text-success') %>
+                <% else %>
+                  <%= icon('fas', 'lock-open', class: 'text-danger') %>
+                <% end %>
               <% when "st_thermostat" %>
-                <%= icon('fas', 'temperature-high') %>
+                <% if device.status == 'cooling' %>
+                  <%= icon('fas', 'temperature-high', class: 'text-primary') %>
+                <% elsif device.status == 'heating' %>
+                  <%= icon('fas', 'temperature-high', class: 'text-danger') %>
+                <% else %>
+                  <%= icon('fas', 'temperature-high', class: 'text-muted') %>
+                <% end %>
               <% end %>
             </td>
             <td><%= device.display_name %></td>
-            <td><%= device.hardware_type %></td>
             <td><%= device.status %></td>
             <td>
-              <%= device.meta %>
+              <% if device.hardware_type == "st_thermostat" %>
+                Mode: <%= device.meta["mode"] %> | 
+                Temperature: <%= device.meta["temperature"] %> °F
+              <% end %>
             </td>
           <% end %>
         <% end %>
@@ -57,7 +73,7 @@
     </table>
   </div>
 
-  <%= link_to "Reconnect with SmartThings to add more devices", @smartthings_authorize_url  %> 
+  <%= link_to "Reconnect with SmartThings to add or remove devices", @smartthings_authorize_url  %> 
 <% else %>
   <%= link_to "Connect with SmartThings to add devices", @smartthings_authorize_url  %>  
 <% end %>

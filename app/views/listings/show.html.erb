@@ -24,7 +24,7 @@
     <% end %>
   </div>
   <h4>Devices</h4>
-  <% if @listing.devices.any? %>
+  <% if @devices.any? %>
     <div class="table-responsive">
       <table class="table table-striped table-bordered table-hover">
         <thead>
@@ -37,7 +37,7 @@
         </thead>
 
         <tbody>
-          <% @listing.devices.each do |device| %>
+          <% @devices.each do |device| %>
             <%= content_tag :tr, id: dom_id(device), class: dom_class(device) do %>
               <td>
                 <!-- Being lazy and using bootstrap classes here for color -->

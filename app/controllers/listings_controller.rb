@@ -15,6 +15,7 @@ class ListingsController < ApplicationController
     @smartthings_authorize_url = Services::Smartthings.new(@listing.id).authorization_url
     @reservation = Reservation.new(checkout_time: '10:00 AM')
     @reservations = @listing.reservations.order(start_date: :desc)
+    @devices = @listing.devices.order(:hardware_type)
   end
 
   # GET /listings/new

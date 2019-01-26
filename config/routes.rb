@@ -4,6 +4,9 @@ Rails.application.routes.draw do
   devise_for :users
   root to: 'home#index'
   
-  resources :listings
+  resources :listings do
+    resources :reservations, only: [ :create, :update, :destroy ]
+  end
+
   get 'smartthings_oauth/callback', to: 'smartthings_oauth#create'
 end

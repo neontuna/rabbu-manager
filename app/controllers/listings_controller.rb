@@ -13,6 +13,7 @@ class ListingsController < ApplicationController
   # GET /listings/1.json
   def show
     @smartthings_authorize_url = Services::Smartthings.new(@listing.id).authorization_url
+    @reservation = Reservation.new
   end
 
   # GET /listings/new

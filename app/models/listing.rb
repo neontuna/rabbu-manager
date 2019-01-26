@@ -15,6 +15,7 @@
 class Listing < ApplicationRecord
   belongs_to :user
   has_many :devices, dependent: :destroy
+  has_many :reservations, dependent: :destroy
 
   def save_smartthings_connection(callback_code)
     smartthings = Services::Smartthings.new(self.id)

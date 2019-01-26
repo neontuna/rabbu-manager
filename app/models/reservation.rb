@@ -13,6 +13,8 @@
 class Reservation < ApplicationRecord
   belongs_to :listing
 
+  validates :start_date, presence: true
+  validates :end_date, presence: true
   validate :end_date_after_start_date
   validates :start_date, :end_date, overlap: {
     scope: "listing_id",
@@ -20,7 +22,7 @@ class Reservation < ApplicationRecord
   }
 
   def end_date_after_start_date
-    if end_date <= start_date
+    if end_date.present? && end_date <= start_date
       errors.add(:end_date, "cannot be before or the same as start date, McFly.")
     end
   end

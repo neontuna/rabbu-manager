@@ -11,6 +11,7 @@
 #  smartthings_token    :string
 #  smartthings_endpoint :string
 #  time_zone            :string           not null
+#  automatic_servicing  :boolean          default(FALSE)
 #
 
 class Listing < ApplicationRecord

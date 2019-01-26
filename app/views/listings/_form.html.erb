@@ -26,6 +26,12 @@
     </div>
   </div>
 
+  <div class="form-group form-check">
+    <%= form.check_box :automatic_servicing, class: "form-check-input" %>
+    <%= form.label :automatic_servicing %>
+    <%= icon('fas', 'question-circle', class: 'text-muted', data: { toggle: "tooltip", placement: "right", title: "Automatically turn off lights following checkout at 10 AM" }) %>
+  </div>
+
   <div class="form-group">
     <% if listing.persisted? %>
       <div class="float-right">

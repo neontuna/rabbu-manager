@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_26_155421) do
+ActiveRecord::Schema.define(version: 2019_01_26_161823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2019_01_26_155421) do
     t.string "smartthings_token"
     t.string "smartthings_endpoint"
     t.string "time_zone", null: false
+    t.boolean "automatic_servicing", default: false
     t.index ["user_id"], name: "index_listings_on_user_id"
   end
 
@@ -56,6 +57,7 @@ ActiveRecord::Schema.define(version: 2019_01_26_155421) do
     t.date "end_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "automatic_check_out_complete", default: false
     t.index ["listing_id"], name: "index_reservations_on_listing_id"
   end
 

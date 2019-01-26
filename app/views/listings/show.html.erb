@@ -15,6 +15,14 @@
 </h1>
 
 <div class="mt-3">  
+  <div class="float-right">
+    Automatic Servicing: 
+    <% if @listing.automatic_servicing %>
+      <span class="text-success">Enabled</span>
+    <% else %>
+      <span class="text-danger">Disabled</span>
+    <% end %>
+  </div>
   <h4>Devices</h4>
   <% if @listing.devices.any? %>
     <div class="table-responsive">

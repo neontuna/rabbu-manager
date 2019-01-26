@@ -6,7 +6,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module RabbuManager
+module SmartManager
   class Application < Rails::Application
     # Allows for using module namespacing, see app/services for example
     config.autoload_paths += %W(#{config.root}/app)

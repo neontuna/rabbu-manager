@@ -17,9 +17,9 @@
 
   <div class="form-group">
     <%= form.label :time_zone %>
-    <%= form.time_zone_select :time_zone, 
-      ActiveSupport::TimeZone.us_zones, 
-      { default: "Eastern Time (US & Canada)" }, 
+    <%= form.select :time_zone, 
+      TZInfo::Country.get('US').zone_identifiers, 
+      { default: "America/New_York" }, 
       { class: 'form-control' } %>
     <div class="invalid-feedback">
       <%= show_field_errors(listing, :time_zone) %>

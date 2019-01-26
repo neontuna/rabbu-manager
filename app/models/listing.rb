@@ -10,10 +10,12 @@
 #  updated_at           :datetime         not null
 #  smartthings_token    :string
 #  smartthings_endpoint :string
+#  time_zone            :string           not null
 #
 
 class Listing < ApplicationRecord
   validates :title, presence: true
+  validates :time_zone, presence: true
 
   belongs_to :user
   has_many :devices, dependent: :destroy

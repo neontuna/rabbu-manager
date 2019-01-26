@@ -13,6 +13,8 @@
 #
 
 class Listing < ApplicationRecord
+  validates :title, presence: true
+
   belongs_to :user
   has_many :devices, dependent: :destroy
   has_many :reservations, dependent: :destroy

@@ -1,0 +1,8 @@
+$(".rm-reservations__edit-form").html('<%= j render "reservations/form", reservation: @reservation, listing: @listing %>')
+$(".rm-reservations__edit-form").removeClass('hidden');
+$(".rm-reservations__create-button").addClass('hidden');
+
+$(".rm-reservations__edit-cancel-button").click(function() {
+  $(".rm-reservations__edit-form").addClass('hidden');
+  $(".rm-reservations__create-button").removeClass('hidden');
+});

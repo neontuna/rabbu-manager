@@ -78,7 +78,37 @@
 
 <div class="mt-4">
   <h4>Reservations</h4>
-  <div class="rm-reservations__create-form">
+  <div class="rm-reservations__create-button btn btn-primary">New Reservation</div>
+  <div class="rm-reservations__create-form hidden">
     <%= render 'reservations/form', reservation: @reservation, listing: @listing %>
   </div>
+  <div class="rm-reservations__edit-form hidden">
+  </div>
+  <% if @listing.reservations.any? %>
+    <div class="mt-2 table-responsive">
+      <table class="table table-striped table-bordered table-hover">
+        <thead>
+          <tr>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @listing.reservations.each do |reservation| %>
+            <%= content_tag :tr, id: dom_id(reservation), class: dom_class(reservation) do %>
+              <td><%= reservation.start_date %></td>
+              <td><%= reservation.end_date %></td>
+              <td>
+                <%= link_to "Edit", edit_listing_reservation_path(@listing, reservation), remote: true  %>
+              </td>
+            <% end %>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    No reservations for listing.
+  <% end %>
 </div>

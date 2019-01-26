@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
-  before_action :load_listing
-  before_action :load_reservation, except: [:create]
+  before_action :set_listing
+  before_action :set_reservation, except: [:create]
 
   def create
     @reservation = @listing.reservations.new(reservation_params)
@@ -39,12 +39,12 @@ class ReservationsController < ApplicationController
 
   private
 
-  def load_listing
+  def set_listing
     @listing = current_user.listings.find(params[:listing_id])
     redirect_to root, warning: 'Invalid listing id' unless @listing
   end
 
-  def load_reservation
+  def set_reservation
     @reservation = @listing.reservations.find(params[:id])
   end
 

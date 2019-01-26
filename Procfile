@@ -1,3 +1,3 @@
 web: rails server
-sidekiq: sidekiq
+sidekiq: bundle exec sidekiq -C config/sidekiq.yml
 webpack: bin/webpack-dev-server

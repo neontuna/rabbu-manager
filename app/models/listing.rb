@@ -35,4 +35,8 @@ class Listing < ApplicationRecord
   def update_devices
     Services::Smartthings.new(self.id).update_devices_for_listing
   end
+
+  def process_automatic_checkout
+    Services::Smartthings.new(self.id).turn_off_lights_for_listing
+  end
 end

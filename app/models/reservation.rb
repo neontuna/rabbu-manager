@@ -33,7 +33,8 @@ class Reservation < ApplicationRecord
     includes(:listing).references(:listing).
     where(
       "(end_date + checkout_time) <= CURRENT_TIMESTAMP AT TIME ZONE listings.time_zone AND
-        automatic_checkout_complete = false"
+        automatic_checkout_complete = false AND
+        listings.automatic_servicing = true"
     )
   end
 end

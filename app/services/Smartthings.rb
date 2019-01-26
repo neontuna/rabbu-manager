@@ -81,6 +81,23 @@ module Services
       remove_unselected_devices
     end
 
+    def turn_off_lights_for_listing
+      handle_http_exception do
+        response = HTTParty.put(
+          "#{@listing.smartthings_endpoint}/switches/off",
+          headers: {
+            Authorization: "Bearer #{@listing.smartthings_token}"
+          }
+        )
+
+        if response.code == 200
+          response.parsed_response
+        else
+          errors << response.parsed_response
+        end
+      end 
+    end
+
     private
 
     # check results from Smartthings endpoint, removing any devices that didn't come back

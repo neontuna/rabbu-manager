@@ -1,8 +1,8 @@
 class ReservationsController < ApplicationController
+  before_action :load_listing
+  before_action :load_reservation, except: [:create]
+
   def create
-    @listing = current_user.listings.find(params[:listing_id])
-    redirect_to root, warning: 'Invalid listing id' unless @listing
-    
     @reservation = @listing.reservations.new(reservation_params)
 
     respond_to do |format|
@@ -15,22 +15,12 @@ class ReservationsController < ApplicationController
   end
 
   def edit
-    @listing = current_user.listings.find(params[:listing_id])
-    redirect_to root, warning: 'Invalid listing id' unless @listing
-
-    @reservation = @listing.reservations.find(params[:id])
-
     respond_to do |format|
       format.js
     end
   end
 
   def update
-    @listing = current_user.listings.find(params[:listing_id])
-    redirect_to root, warning: 'Invalid listing id' unless @listing
-    
-    @reservation = @listing.reservations.find(params[:id])
-
     respond_to do |format|
       if @reservation.update(reservation_params)
         format.js { redirect_to @listing, notice: 'Reservation was successfully updated.' }
@@ -41,11 +31,6 @@ class ReservationsController < ApplicationController
   end
 
   def destroy
-    @listing = current_user.listings.find(params[:listing_id])
-    redirect_to root, warning: 'Invalid listing id' unless @listing
-    
-    @reservation = @listing.reservations.find(params[:id])
-
     @reservation.destroy
     respond_to do |format|
       format.html { redirect_to @listing, notice: 'Reservation was successfully destroyed.' }
@@ -53,6 +38,15 @@ class ReservationsController < ApplicationController
   end
 
   private
+
+  def load_listing
+    @listing = current_user.listings.find(params[:listing_id])
+    redirect_to root, warning: 'Invalid listing id' unless @listing
+  end
+
+  def load_reservation
+    @reservation = @listing.reservations.find(params[:id])
+  end
 
   def reservation_params
     params.require(:reservation).permit(:start_date, :end_date)

@@ -6,7 +6,5 @@
   - mailers
   - default
 
-staging:
-  :concurrency: 10
 production:
-  :concurrency: 10
+  :concurrency: 5

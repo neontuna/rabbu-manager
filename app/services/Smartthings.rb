@@ -51,22 +51,22 @@ module Services
       http_request(ENDPOINTS_URI, :get)[0]['uri']
     end
 
-    def update_devices_for_listing
-      return if failure?
+    # def update_devices_for_listing
+    #   return if failure?
 
-      devices.each do |remote_device|
-        @listing.devices.where(smartthings_id: remote_device['id']).first_or_create.tap do |local_device|
-          local_device.update(
-            display_name: remote_device['name'],
-            hardware_type: remote_device['type'],
-            status: remote_device['value'],
-            meta: remote_device['meta']
-          )
-        end
-      end
+    #   devices.each do |remote_device|
+    #     @listing.devices.where(smartthings_id: remote_device['id']).first_or_create.tap do |local_device|
+    #       local_device.update(
+    #         display_name: remote_device['name'],
+    #         hardware_type: remote_device['type'],
+    #         status: remote_device['value'],
+    #         meta: remote_device['meta']
+    #       )
+    #     end
+    #   end
 
-      remove_unselected_devices
-    end
+    #   remove_unselected_devices
+    # end
 
     def turn_off_lights_for_listing
       http_request("#{@listing.smartthings_endpoint}/switches/off", :put)
@@ -76,17 +76,17 @@ module Services
 
     # check results from Smartthings endpoint, removing any devices that didn't come back
     # we assume the user has unchecked these from the Smartapp install screen
-    def remove_unselected_devices
-      local_devices = @listing.devices.pluck(:smartthings_id)
-      remote_devices = devices.collect{ |u| u['id'] }
+    # def remove_unselected_devices
+    #   local_devices = @listing.devices.pluck(:smartthings_id)
+    #   remote_devices = devices.collect{ |u| u['id'] }
 
-      deleted_ids = local_devices - remote_devices
-      @listing.devices.where(smartthings_id: deleted_ids).destroy_all
-    end
+    #   deleted_ids = local_devices - remote_devices
+    #   @listing.devices.where(smartthings_id: deleted_ids).destroy_all
+    # end
 
-    def devices
-      @devices ||= http_request("#{@listing.smartthings_endpoint}/devices", :get)  
-    end
+    # def devices
+    #   @devices ||= http_request("#{@listing.smartthings_endpoint}/devices", :get)  
+    # end
 
     def http_request(url, verb)
       handle_http_exception do

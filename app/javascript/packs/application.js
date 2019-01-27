@@ -7,4 +7,18 @@
 // To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
 // layout file, like app/views/layouts/application.html.erb
 
-console.log('Hello World from Webpacker')
+import Vue from 'vue/dist/vue.esm';
+import TurbolinksAdapter from 'vue-turbolinks';
+Vue.use(TurbolinksAdapter)
+
+import Devices from '../devices.vue';
+
+document.addEventListener('turbolinks:load', () => {
+  var element = document.getElementById("vue-mount")
+  if (element != null) {
+    const app = new Vue({
+      el: '#vue-mount',
+      components: { Devices }
+    })
+  }
+});

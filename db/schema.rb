@@ -10,22 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_26_173627) do
+ActiveRecord::Schema.define(version: 2019_01_27_193840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "devices", force: :cascade do |t|
-    t.bigint "listing_id"
-    t.string "status", default: "0", null: false
-    t.integer "hardware_type", default: 0, null: false
-    t.jsonb "meta"
-    t.string "display_name"
-    t.string "smartthings_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["listing_id"], name: "index_devices_on_listing_id"
-  end
 
   create_table "friendly_id_slugs", force: :cascade do |t|
     t.string "slug", null: false

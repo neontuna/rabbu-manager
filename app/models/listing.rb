@@ -19,7 +19,6 @@ class Listing < ApplicationRecord
   validates :time_zone, presence: true
 
   belongs_to :user
-  has_many :devices, dependent: :destroy
   has_many :reservations, dependent: :destroy
 
   def save_smartthings_connection(callback_code)
@@ -30,10 +29,6 @@ class Listing < ApplicationRecord
       smartthings_token: token,
       smartthings_endpoint: smartthings.endpoint(token)
     )
-  end
-
-  def update_devices
-    Services::Smartthings.new(self.id).update_devices_for_listing
   end
 
   def process_automatic_checkout

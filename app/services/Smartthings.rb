@@ -48,20 +48,7 @@ module Services
     end
 
     def endpoint(auth_token)
-      handle_http_exception do
-        response = HTTParty.get(
-          ENDPOINTS_URI,
-          headers: {
-            Authorization: "Bearer #{auth_token}"
-          }
-        )
-
-        if response.code == 200
-          response.parsed_response[0]['uri']
-        else
-          errors << response.parsed_response
-        end
-      end
+      http_request(ENDPOINTS_URI, :get)[0]['uri']
     end
 
     def update_devices_for_listing
@@ -82,20 +69,7 @@ module Services
     end
 
     def turn_off_lights_for_listing
-      handle_http_exception do
-        response = HTTParty.put(
-          "#{@listing.smartthings_endpoint}/switches/off",
-          headers: {
-            Authorization: "Bearer #{@listing.smartthings_token}"
-          }
-        )
-
-        if response.code == 200
-          response.parsed_response
-        else
-          errors << response.parsed_response
-        end
-      end 
+      http_request("#{@listing.smartthings_endpoint}/switches/off", :put)
     end
 
     private
@@ -111,9 +85,13 @@ module Services
     end
 
     def devices
-      @devices ||= handle_http_exception do
-        response = HTTParty.get(
-          "#{@listing.smartthings_endpoint}/devices",
+      @devices ||= http_request("#{@listing.smartthings_endpoint}/devices", :get)  
+    end
+
+    def http_request(url, verb)
+      handle_http_exception do
+        response = HTTParty.send(verb,
+          url,
           headers: {
             Authorization: "Bearer #{@listing.smartthings_token}"
           }
